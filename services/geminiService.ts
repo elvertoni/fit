@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { AppData } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 export const generateHealthInsights = async (data: AppData): Promise<string> => {
   if (!data.profile) return "Perfil não encontrado.";
