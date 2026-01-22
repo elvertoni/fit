@@ -33,7 +33,7 @@ const WeightChart: React.FC<Props> = ({ data, targetWeight }) => {
   const BRAND_NAVY = '#0b1f3a';
 
   return (
-    <div className="w-full h-[320px] glass-panel p-6 rounded-3xl shadow-2xl border border-white/60">
+    <div className="w-full glass-panel p-6 rounded-3xl shadow-2xl border border-white/60">
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-brand-navy/50">Tendência</p>
@@ -41,48 +41,63 @@ const WeightChart: React.FC<Props> = ({ data, targetWeight }) => {
         </div>
         <span className="text-xs text-brand-navy/60">{data.length} registros</span>
       </div>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={formattedData}
-          margin={{
-            top: 5,
-            right: 10,
-            left: -20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-          <XAxis 
-            dataKey="displayDate" 
-            tick={{fontSize: 12, fill: '#64748b'}} 
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis 
-            domain={[Math.floor(minWeight - padding), Math.ceil(maxWeight + padding)]} 
-            tick={{fontSize: 12, fill: '#64748b'}}
-            tickLine={false}
-            axisLine={false}
-            tickCount={6}
-          />
-          <Tooltip 
-            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -8px rgb(15 23 42 / 0.2)' }}
-            labelFormatter={(label, payload) => {
-               if (payload && payload.length > 0) return payload[0].payload.fullDate;
-               return label;
+      <div className="w-full h-[280px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={formattedData}
+            margin={{
+              top: 10,
+              right: 30,
+              left: 0,
+              bottom: 10,
             }}
-          />
-          <ReferenceLine y={targetWeight} stroke={BRAND_TEAL} strokeDasharray="5 5" label={{ value: 'Meta', position: 'right', fill: BRAND_TEAL, fontSize: 12 }} />
-          <Line
-            type="monotone"
-            dataKey="weight"
-            stroke={BRAND_NAVY}
-            strokeWidth={3}
-            dot={{ r: 4, fill: BRAND_NAVY, strokeWidth: 2, stroke: '#fff' }}
-            activeDot={{ r: 6, stroke: BRAND_TEAL, strokeWidth: 2 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+            <XAxis
+              dataKey="displayDate"
+              tick={{fontSize: 12, fill: '#64748b'}}
+              tickLine={false}
+              axisLine={false}
+              height={40}
+            />
+            <YAxis
+              domain={[Math.floor(minWeight - padding), Math.ceil(maxWeight + padding)]}
+              tick={{fontSize: 12, fill: '#64748b'}}
+              tickLine={false}
+              axisLine={false}
+              tickCount={6}
+              width={50}
+            />
+            <Tooltip
+              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -8px rgb(15 23 42 / 0.2)' }}
+              labelFormatter={(label, payload) => {
+                 if (payload && payload.length > 0) return payload[0].payload.fullDate;
+                 return label;
+              }}
+            />
+            <ReferenceLine
+              y={targetWeight}
+              stroke={BRAND_TEAL}
+              strokeDasharray="5 5"
+              label={{
+                value: 'Meta',
+                position: 'insideTopRight',
+                fill: BRAND_TEAL,
+                fontSize: 11,
+                offset: 10
+              }}
+            />
+            <Line
+              type="monotone"
+              dataKey="weight"
+              stroke={BRAND_NAVY}
+              strokeWidth={3}
+              dot={{ r: 4, fill: BRAND_NAVY, strokeWidth: 2, stroke: '#fff' }}
+              activeDot={{ r: 6, stroke: BRAND_TEAL, strokeWidth: 2 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

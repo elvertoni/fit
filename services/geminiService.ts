@@ -12,14 +12,23 @@ export const generateHealthInsights = async (data: AppData): Promise<string> => 
       body: JSON.stringify(data),
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // Log detailed error for debugging
+      console.error("Gemini API Error:", {
+        status: response.status,
+        errorType: result.errorType,
+        error: result.error,
+      });
+
+      // Return the error message from the server
+      return result.error || `Erro ao gerar análise (${response.status})`;
     }
 
-    const result = await response.json();
     return result.analysis || "Não foi possível gerar a análise no momento.";
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    return "Desculpe, ocorreu um erro ao conectar com a inteligência artificial. Tente novamente mais tarde.";
+    console.error("Network/Fetch Error:", error);
+    return "Desculpe, ocorreu um erro de conexão. Verifique sua internet e tente novamente.";
   }
 };

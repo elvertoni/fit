@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Lock, Mail, ChevronRight, Loader2 } from 'lucide-react';
+import EmailVerification from './EmailVerification';
 
 const Auth: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -8,6 +9,8 @@ const Auth: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,12 +28,15 @@ const Auth: React.FC = () => {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}`,
+          },
         });
         if (error) throw error;
-        else {
-          alert('Conta criada com sucesso! Você já pode fazer login.');
-          setIsLogin(true); // Switch to login after signup
-        }
+
+        // Mostrar tela de verificação de email
+        setRegisteredEmail(email);
+        setShowEmailVerification(true);
       }
     } catch (err: any) {
       setError(err.message || 'Ocorreu um erro. Verifique seus dados.');
@@ -38,6 +44,18 @@ const Auth: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleBackToLogin = () => {
+    setShowEmailVerification(false);
+    setIsLogin(true);
+    setEmail('');
+    setPassword('');
+  };
+
+  // Se está mostrando a tela de verificação de email
+  if (showEmailVerification) {
+    return <EmailVerification email={registeredEmail} onBackToLogin={handleBackToLogin} />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
